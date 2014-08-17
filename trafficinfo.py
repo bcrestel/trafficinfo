@@ -193,7 +193,10 @@ def wait_tilnextrun():
 				time.sleep(timeleft)
 				if index % 2 == 0:	return 'NB'
 				else:	return 'SB'
-		timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+		if daytoday.weekday() < 4:
+			timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+		else:
+			timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+3, 8) - daytoday).total_seconds()
 		time.sleep(timeleft)
 
 	elif daytoday.weekday() == 5:	
