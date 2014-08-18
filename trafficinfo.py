@@ -235,18 +235,18 @@ def wait_tilnextrun():
 				if myindex % 2 == 0:	return 'NB'
 				else:	return 'SB'
 		if daytoday.weekday() < 4:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 40) - daytoday).total_seconds()
 		else:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 8) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 7, 40) - daytoday).total_seconds()
 		time.sleep(timeleft)
 
 	elif daytoday.weekday() == 5:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 8) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 7, 40) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 6:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 40) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
