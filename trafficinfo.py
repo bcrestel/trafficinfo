@@ -216,7 +216,7 @@ def generate_msg(direction, TakeMopac):
 
 
 def wait_tilnextrun():
-# Code runs M through F at 8:00am(NB), 8:30am(SB),
+# Code runs M through F at 7:30am(NB), 8:30am(SB),
 # 2:45pm(NB) and 3:15pm(SB)
 # return the direction of the next computation
 	daytoday = datetime.today()
