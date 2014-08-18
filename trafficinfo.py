@@ -30,7 +30,7 @@ def read_api(position1, position2):
 	myhtml = HERE_API_HTML.format(
 	HERE_credentials.App_Keys['App_id'], HERE_credentials.App_Keys['App_Code'],
 	position1[0], position1[1], position2[0], position2[1])
-	print myhtml
+	#print myhtml
 	mysoup = BeautifulSoup( urlopen(myhtml).read() )
 	
 	mytxt = mysoup.find('p').get_text()
@@ -45,7 +45,7 @@ def extract_time(HEREapitxt):
 	myindex_end = HEREapitxt[myindex_beg:].find('}')
 	element_keys = HEREapitxt[myindex_beg:myindex_beg+myindex_end+1].split('"')
 	ii = 0
-	print myindex_beg, myindex_end, element_keys
+	#print myindex_beg, myindex_end, element_keys
 	while element_keys[ii] != 'distance':
 		ii += 1
 	try:
@@ -157,57 +157,59 @@ def generate_msg(direction, TakeMopac):
 		msgfile = open('NB_mymsg.txt', 'r')
 		mylines = msgfile.readlines()
 		msgfile.close()
+		msg = 'Info Traffic Northbound direction.\n'
 
 		if TakeMopac[0]*TakeMopac[1] == 1:
-			msg = mylines[0]
-			if TakeMopac[2]*TakeMopac[3]*TakeMopac[4] == 1:	return mylines[1]
+			msg = msg + mylines[0]
+			if TakeMopac[2]*TakeMopac[3]*TakeMopac[4] == 1:	return msg + mylines[1]
 			else:
 				if TakeMopac[2] == 0:	msg = msg + mylines[4]
 				if TakeMopac[3] == 0:	msg = msg + mylines[5]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 		elif TakeMopac[1] == 1:	
-			msg = mylines[2]
+			msg = msg + mylines[2]
 			if TakeMopac[2] == 0:	msg = msg + mylines[4]
 			if TakeMopac[3] == 0:	msg = msg + mylines[5]
 			if TakeMopac[4] == 0:	msg = msg + mylines[6]
 		else:
 			if TakeMopac[2] == 1:	
-				msg = mylines[3]
+				msg = msg + mylines[3]
 				if TakeMopac[3] == 0:	msg = msg + mylines[5]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 			elif TakeMopac[3] == 1:	
-				msg = mylines[7]
+				msg = msg + mylines[7]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 			else:
-				return mylines[8]
+				return msg + mylines[8]
 
-	if direction == 'SB':
+	elif direction == 'SB':
 		msgfile = open('SB_mymsg.txt', 'r')
 		mylines = msgfile.readlines()
 		msgfile.close()
+		msg = 'Info Traffic Southbound direction.\n'
 
 		if TakeMopac[0]*TakeMopac[1] == 1:
-			msg = mylines[0]
-			if TakeMopac[2]*TakeMopac[3]*TakeMopac[4] == 1:	return mylines[1]
+			msg = msg + mylines[0]
+			if TakeMopac[2]*TakeMopac[3]*TakeMopac[4] == 1:	return msg + mylines[1]
 			else:
 				if TakeMopac[2] == 0:	msg = msg + mylines[4]
 				if TakeMopac[3] == 0:	msg = msg + mylines[5]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 		elif TakeMopac[1] == 1:	
-			msg = mylines[2]
+			msg = msg + mylines[2]
 			if TakeMopac[2] == 0:	msg = msg + mylines[4]
 			if TakeMopac[3] == 0:	msg = msg + mylines[5]
 			if TakeMopac[4] == 0:	msg = msg + mylines[6]
 		else:
 			if TakeMopac[2] == 1:	
-				msg = mylines[3]
+				msg = msg + mylines[3]
 				if TakeMopac[3] == 0:	msg = msg + mylines[5]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 			elif TakeMopac[3] == 1:	
-				msg = mylines[7]
+				msg = msg + mylines[7]
 				if TakeMopac[4] == 0:	msg = msg + mylines[6]
 			else:
-				return mylines[8]
+				return msg + mylines[8]
 
 	else:
 		print "Error generate_msg: direction selected does not exist"
@@ -223,14 +225,14 @@ def wait_tilnextrun():
 	daytoday = datetime.today()
 	dt = []
 	if daytoday.weekday() < 5:
-		date1 = datetime(daytoday.year, daytoday.month, daytoday.day, 7, 30); dt.append((date1 - daytoday).total_seconds())
+		date1 = datetime(daytoday.year, daytoday.month, daytoday.day, 7, 40); dt.append((date1 - daytoday).total_seconds())
 		date2 = datetime(daytoday.year, daytoday.month, daytoday.day, 8, 30); dt.append((date2 - daytoday).total_seconds())
-		date3 = datetime(daytoday.year, daytoday.month, daytoday.day, 14, 30); dt.append((date3 - daytoday).total_seconds())
+		date3 = datetime(daytoday.year, daytoday.month, daytoday.day, 14, 25); dt.append((date3 - daytoday).total_seconds())
 		date4 = datetime(daytoday.year, daytoday.month, daytoday.day, 15, 15); dt.append((date4 - daytoday).total_seconds())
 		for timeleft, myindex in zip(dt, range(4)):
 			if timeleft > 0.:
 				time.sleep(timeleft)
-				if index % 2 == 0:	return 'NB'
+				if myindex % 2 == 0:	return 'NB'
 				else:	return 'SB'
 		if daytoday.weekday() < 4:
 			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
@@ -256,10 +258,13 @@ def wait_tilnextrun():
 if __name__ == "__main__":
 	while True:
 		direction = wait_tilnextrun()	# Only run between M and F
-		# First time prior beginning of trip
-		msg1 = generate_msg(direction, route_comparison(direction))
+		
+		rtecomp1 = route_comparison(direction)	# First time immediately
+		msg1 = generate_msg(direction, rtecomp1)
 		send_text(msg1)
-		# Second time 15 min after beginning of trip
-		time.sleep(900)
-		msg2 = generate_msg(direction, route_comparison(direction))
-		if msg1 != msg2:	send_text(msg2)
+		
+		time.sleep(900)	# Second time 15 min after beginning of trip
+		rtecomp2 = route_comparison(direction)
+		if rtecomp1[2:] != rtecomp2[2:]:
+			msg2 = generate_msg(direction, rtecomp2)
+			send_text(msg2)
