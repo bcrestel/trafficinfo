@@ -5,6 +5,7 @@ from urllib2 import urlopen
 import sys
 import smtplib
 import time
+from datetime import datetime 
 
 import myconfig_gmail
 import HERE_credentials
@@ -222,28 +223,28 @@ def wait_tilnextrun():
 	daytoday = datetime.today()
 	dt = []
 	if daytoday.weekday() < 5:
-		date1 = datime(daytoday.year, daytoday.month, daytoday.day, 7, 30); dt.append((date1 - daytoday).total_seconds())
-		date2 = datime(daytoday.year, daytoday.month, daytoday.day, 8, 30); dt.append((date2 - daytoday).total_seconds())
-		date3 = datime(daytoday.year, daytoday.month, daytoday.day, 14, 30); dt.append((date3 - daytoday).total_seconds())
-		date4 = datime(daytoday.year, daytoday.month, daytoday.day, 15, 15); dt.append((date4 - daytoday).total_seconds())
+		date1 = datetime(daytoday.year, daytoday.month, daytoday.day, 7, 30); dt.append((date1 - daytoday).total_seconds())
+		date2 = datetime(daytoday.year, daytoday.month, daytoday.day, 8, 30); dt.append((date2 - daytoday).total_seconds())
+		date3 = datetime(daytoday.year, daytoday.month, daytoday.day, 14, 30); dt.append((date3 - daytoday).total_seconds())
+		date4 = datetime(daytoday.year, daytoday.month, daytoday.day, 15, 15); dt.append((date4 - daytoday).total_seconds())
 		for timeleft, myindex in zip(dt, range(4)):
 			if timeleft > 0.:
 				time.sleep(timeleft)
 				if index % 2 == 0:	return 'NB'
 				else:	return 'SB'
 		if daytoday.weekday() < 4:
-			timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
 		else:
-			timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+3, 8) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 8) - daytoday).total_seconds()
 		time.sleep(timeleft)
 
 	elif daytoday.weekday() == 5:	
-		timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+2, 8) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 8) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 6:	
-		timeleft = (datime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 8) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
