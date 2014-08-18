@@ -7,7 +7,6 @@ import smtplib
 import time
 
 import myconfig_gmail
-import myphonenumber
 import HERE_credentials
 
 
@@ -15,7 +14,12 @@ HERE_API_HTML = 'http://route.cit.api.here.com/routing/7.2/calculateroute.json' 
 '?app_id={0}&app_code={1}' \
 '&waypoint0=geo!{2},{3}&waypoint1=geo!{4},{5}' \
 '&mode=shortest;car;traffic:enabled'
-ALTFACTOR = 1.2	# Factor to advantage Mopac over alternative route
+ALTFACTOR = 1.1	# Factor to advantage Mopac over alternative route
+PHONENBLIST = 'phonenumbers.txt'
+TXTEMAILEXT = dict(
+	Virgin = '@vmobl.com',
+	ATT = '@txt.att.net'
+)
 
 def read_api(position1, position2):
 # Read the route API from HERE using our credentials
@@ -57,13 +61,16 @@ def extract_time(HEREapitxt):
 def send_text(msg):                                                  
 # This is set up to send a text message to Virgin Mobile
 # phone number
-    fromaddr = "Traffic Info"
-    toaddrs = myphonenumber.phone_number + "@vmobl.com"
-    server = smtplib.SMTP('smtp.gmail.com:587')
-    server.starttls()   # used for encryption
-    server.login(myconfig_gmail.email['username'], myconfig_gmail.email['password'])
-    server.sendmail(fromaddr, toaddrs, msg)
-    server.quit()
+	fromaddr = "Traffic Info"
+	server = smtplib.SMTP('smtp.gmail.com:587')
+	server.starttls()   # used for encryption
+	server.login(myconfig_gmail.email['username'], myconfig_gmail.email['password'])
+	phonelistfile = open(PHONENBLIST, 'r')
+	for myphnb in phonelistfile:
+		phnb = myphnb.split()
+		toaddrs = phnb[0] + TXTEMAILEXT[phnb[1]]
+		server.sendmail(fromaddr, toaddrs, msg)
+	server.quit()
 
 
 def check_dist(ref_dist, web_dist):
@@ -123,6 +130,9 @@ def route_comparison(direction):
 	if direction == 'NB':
 		MOPAC = 'NB_Mopac.py'
 		ALT = 'NB_Alt.py'
+	elif direction == 'SB':
+		MOPAC = 'SB_Mopac.py'
+		ALT = 'SB_Alt.py'
 	else:
 		print "Error route_comparison: direction selected does not exist"
 		sys.exit(1)
@@ -170,6 +180,34 @@ def generate_msg(direction, TakeMopac):
 			else:
 				return mylines[8]
 
+	if direction == 'SB':
+		msgfile = open('SB_mymsg.txt', 'r')
+		mylines = msgfile.readlines()
+		msgfile.close()
+
+		if TakeMopac[0]*TakeMopac[1] == 1:
+			msg = mylines[0]
+			if TakeMopac[2]*TakeMopac[3]*TakeMopac[4] == 1:	return mylines[1]
+			else:
+				if TakeMopac[2] == 0:	msg = msg + mylines[4]
+				if TakeMopac[3] == 0:	msg = msg + mylines[5]
+				if TakeMopac[4] == 0:	msg = msg + mylines[6]
+		elif TakeMopac[1] == 1:	
+			msg = mylines[2]
+			if TakeMopac[2] == 0:	msg = msg + mylines[4]
+			if TakeMopac[3] == 0:	msg = msg + mylines[5]
+			if TakeMopac[4] == 0:	msg = msg + mylines[6]
+		else:
+			if TakeMopac[2] == 1:	
+				msg = mylines[3]
+				if TakeMopac[3] == 0:	msg = msg + mylines[5]
+				if TakeMopac[4] == 0:	msg = msg + mylines[6]
+			elif TakeMopac[3] == 1:	
+				msg = mylines[7]
+				if TakeMopac[4] == 0:	msg = msg + mylines[6]
+			else:
+				return mylines[8]
+
 	else:
 		print "Error generate_msg: direction selected does not exist"
 		sys.exit(1)
@@ -184,9 +222,9 @@ def wait_tilnextrun():
 	daytoday = datetime.today()
 	dt = []
 	if daytoday.weekday() < 5:
-		date1 = datime(daytoday.year, daytoday.month, daytoday.day, 8); dt.append((date1 - daytoday).total_seconds())
+		date1 = datime(daytoday.year, daytoday.month, daytoday.day, 7, 30); dt.append((date1 - daytoday).total_seconds())
 		date2 = datime(daytoday.year, daytoday.month, daytoday.day, 8, 30); dt.append((date2 - daytoday).total_seconds())
-		date3 = datime(daytoday.year, daytoday.month, daytoday.day, 14, 45); dt.append((date3 - daytoday).total_seconds())
+		date3 = datime(daytoday.year, daytoday.month, daytoday.day, 14, 30); dt.append((date3 - daytoday).total_seconds())
 		date4 = datime(daytoday.year, daytoday.month, daytoday.day, 15, 15); dt.append((date4 - daytoday).total_seconds())
 		for timeleft, myindex in zip(dt, range(4)):
 			if timeleft > 0.:
