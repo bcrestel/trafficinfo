@@ -239,6 +239,7 @@ def wait_tilnextrun():
 		else:
 			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 7, 40) - daytoday).total_seconds()
 		time.sleep(timeleft)
+		return 'NB'
 
 	elif daytoday.weekday() == 5:	
 		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 7, 40) - daytoday).total_seconds()
