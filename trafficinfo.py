@@ -225,29 +225,29 @@ def wait_tilnextrun():
 	daytoday = datetime.today()
 	dt = []
 	if daytoday.weekday() < 5:
-		date1 = datetime(daytoday.year, daytoday.month, daytoday.day, 7, 40); dt.append((date1 - daytoday).total_seconds())
-		date2 = datetime(daytoday.year, daytoday.month, daytoday.day, 8, 30); dt.append((date2 - daytoday).total_seconds())
-		date3 = datetime(daytoday.year, daytoday.month, daytoday.day, 14, 25); dt.append((date3 - daytoday).total_seconds())
-		date4 = datetime(daytoday.year, daytoday.month, daytoday.day, 15, 15); dt.append((date4 - daytoday).total_seconds())
+		date1 = datetime(daytoday.year, daytoday.month, daytoday.day, 7, 45); dt.append((date1 - daytoday).total_seconds())
+		date2 = datetime(daytoday.year, daytoday.month, daytoday.day, 8, 20); dt.append((date2 - daytoday).total_seconds())
+		date3 = datetime(daytoday.year, daytoday.month, daytoday.day, 14, 45); dt.append((date3 - daytoday).total_seconds())
+		date4 = datetime(daytoday.year, daytoday.month, daytoday.day, 15, 20); dt.append((date4 - daytoday).total_seconds())
 		for timeleft, myindex in zip(dt, range(4)):
 			if timeleft > 0.:
 				time.sleep(timeleft)
 				if myindex % 2 == 0:	return 'NB'
 				else:	return 'SB'
 		if daytoday.weekday() < 4:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 40) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 45) - daytoday).total_seconds()
 		else:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 7, 40) - daytoday).total_seconds()
+			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 7, 45) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 5:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 7, 40) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 7, 45) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 6:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 40) - daytoday).total_seconds()
+		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 45) - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
@@ -264,8 +264,10 @@ if __name__ == "__main__":
 		msg1 = generate_msg(direction, rtecomp1)
 		send_text(msg1)
 		
-		time.sleep(900)	# Second time 15 min after beginning of trip
-		rtecomp2 = route_comparison(direction)
-		if rtecomp1[2:] != rtecomp2[2:]:
-			msg2 = generate_msg(direction, rtecomp2)
-			send_text(msg2)
+		for ii in range(6):
+			time.sleep(300)	# check again at increment of 5min
+			rtecomp2 = route_comparison(direction)
+			if rtecomp1 != rtecomp2:
+				msg2 = generate_msg(direction, rtecomp2)
+				send_text(msg2)
+			rtecomp1 = rtecomp2	# Update reference value
