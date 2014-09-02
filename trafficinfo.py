@@ -5,7 +5,7 @@ from urllib2 import urlopen
 import sys
 import smtplib
 import time
-from datetime import datetime 
+from datetime import datetime, timedelta
 
 import myconfig_gmail
 import HERE_credentials
@@ -235,19 +235,23 @@ def wait_tilnextrun():
 				if myindex % 2 == 0:	return 'NB'
 				else:	return 'SB'
 		if daytoday.weekday() < 4:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 45) - daytoday).total_seconds()
+			# use timedelta to handle end-of-month situation
+			nextday = (daytoday + timedelta(days=1)).replace(hour=7,minute=45,second=0,microsecond=0)
 		else:
-			timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+3, 7, 45) - daytoday).total_seconds()
+			nextday = (daytoday + timedelta(days=3)).replace(hour=7,minute=45,second=0,microsecond=0)
+		timeleft = (nextday - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 5:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+2, 7, 45) - daytoday).total_seconds()
+		nextday = (daytoday + timedelta(days=2)).replace(hour=7,minute=45,second=0,microsecond=0)
+		timeleft = (nextday - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
 	elif daytoday.weekday() == 6:	
-		timeleft = (datetime(daytoday.year, daytoday.month, daytoday.day+1, 7, 45) - daytoday).total_seconds()
+		nextday = (daytoday + timedelta(days=1)).replace(hour=7,minute=45,second=0,microsecond=0)
+		timeleft = (nextday - daytoday).total_seconds()
 		time.sleep(timeleft)
 		return 'NB'
 
