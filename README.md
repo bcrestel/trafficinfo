@@ -7,7 +7,12 @@ with alternate road information and it will compare both roads for 30 min from
 the time you set it and text it to you if there is any change.
 
 
-What you need to do to run it:
+How to run the script:
+To let the script run permanently on your machine, type: 
+nohup python trafficinfo.py &
+
+
+What you need to do before you run it:
 - Module requirements listed in requirements.txt
 - Script uses gmail account. You need to enter your credentials in a dict named
   'myconfig.gmail.py'. It will looks like that:
