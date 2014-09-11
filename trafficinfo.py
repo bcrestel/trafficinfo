@@ -65,7 +65,15 @@ def send_text(msg):
 	fromaddr = "Traffic Info"
 	server = smtplib.SMTP('smtp.gmail.com:587')
 	server.starttls()   # used for encryption
-	server.login(myconfig_gmail.email['username'], myconfig_gmail.email['password'])
+	# While loop to prevent connection failure from terminating script:
+	connect_tries = 0
+	while connect_tries < 8:
+		try:
+			server.login(myconfig_gmail.email['username'], myconfig_gmail.email['password'])
+			break
+		except:
+			time.sleep(30)
+			connect_tries += 1
 	phonelistfile = open(PHONENBLIST, 'r')
 	for myphnb in phonelistfile:
 		phnb = myphnb.split()
